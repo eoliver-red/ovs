@@ -6,7 +6,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at:
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -56,6 +56,71 @@ def open_spell_check_dict():
         pass
 
     try:
+        extra_keywords = ['ovs', 'vswitch', 'vswitchd', 'ovs-vswitchd',
+                          'netdev', 'selinux', 'ovs-ctl', 'dpctl', 'ofctl',
+                          'openvswitch', 'dpdk', 'hugepage', 'hugepages',
+                          'pmd', 'upcall', 'vhost', 'rx', 'tx', 'vhostuser',
+                          'openflow', 'qsort', 'rxq', 'txq', 'perf', 'stats',
+                          'struct', 'int', 'char', 'bool', 'upcalls', 'nicira',
+                          'bitmask', 'ipv4', 'ipv6', 'tcp', 'tcp4', 'tcpv4',
+                          'udp', 'udp4', 'udpv4', 'icmp', 'icmp4', 'icmpv6',
+                          'vlan', 'vxlan', 'cksum', 'csum', 'checksum',
+                          'ofproto', 'numa', 'mempool', 'mempools', 'mbuf',
+                          'mbufs', 'hmap', 'cmap', 'smap', 'dhcpv4', 'dhcp',
+                          'dhcpv6', 'opts', 'metadata', 'geneve', 'mutex',
+                          'netdev', 'netdevs', 'subtable', 'virtio', 'qos',
+                          'policer', 'datapath', 'tunctl', 'attr', 'ethernet',
+                          'ether', 'defrag', 'defragment', 'loopback', 'sflow',
+                          'acl', 'initializer', 'recirc', 'xlated', 'unclosed',
+                          'netlink', 'msec', 'usec', 'nsec', 'ms', 'us', 'ns',
+                          'kilobits', 'kbps', 'kilobytes', 'megabytes', 'mbps',
+                          'gigabytes', 'gbps', 'megabits', 'gigabits', 'pkts',
+                          'tuple', 'miniflow', 'megaflow', 'conntrack',
+                          'vlans', 'vxlans', 'arg', 'tpid', 'xbundle',
+                          'xbundles', 'mbundle', 'mbundles', 'netflow',
+                          'localnet', 'odp', 'pre', 'dst', 'dest', 'src',
+                          'ethertype', 'cvlan', 'ips', 'msg', 'msgs',
+                          'liveness', 'userspace', 'eventmask', 'datapaths',
+                          'slowpath', 'fastpath', 'multicast', 'unicast',
+                          'revalidation', 'namespace', 'qdisc', 'uuid',
+                          'ofport', 'subnet', 'revalidation', 'revalidator',
+                          'revalidate', 'l2', 'l3', 'l4', 'openssl', 'mtu',
+                          'ifindex', 'enum', 'enums', 'http', 'https', 'num',
+                          'vconn', 'vconns', 'conn', 'nat', 'memset', 'memcmp',
+                          'strcmp', 'strcasecmp', 'tc', 'ufid', 'api',
+                          'ofpbuf', 'ofpbufs', 'hashmaps', 'hashmap', 'deref',
+                          'dereference', 'hw', 'prio', 'sendmmsg', 'sendmsg',
+                          'malloc', 'free', 'alloc', 'pid', 'ppid', 'pgid',
+                          'uid', 'gid', 'sid', 'utime', 'stime', 'cutime',
+                          'cstime', 'vsize', 'rss', 'rsslim', 'whcan', 'gtime',
+                          'eip', 'rip', 'cgtime', 'dbg', 'gw', 'sbrec', 'bfd',
+                          'sizeof', 'pmds', 'nic', 'nics', 'hwol', 'encap',
+                          'decap', 'tlv', 'tlvs', 'decapsulation', 'fd',
+                          'cacheline', 'xlate', 'skiplist', 'idl',
+                          'comparator', 'natting', 'alg', 'pasv', 'epasv',
+                          'wildcard', 'nated', 'amd64', 'x86_64',
+                          'recirculation', 'linux', 'afxdp', 'promisc', 'goto',
+                          'misconfigured', 'misconfiguration', 'checkpatch',
+                          'debian', 'travis', 'cirrus', 'appveyor', 'faq',
+                          'erspan', 'const', 'hotplug', 'addresssanitizer',
+                          'ovsdb', 'dpif', 'veth', 'rhel', 'jsonrpc', 'json',
+                          'syscall', 'lacp', 'ipf', 'skb', 'valgrind',
+                          'appctl', 'arp', 'asan', 'backport', 'backtrace',
+                          'chmod', 'ci', 'cpu', 'cpus', 'dnat', 'dns', 'dpcls',
+                          'eol', 'ethtool', 'fdb', 'freebsd', 'gcc', 'github',
+                          'glibc', 'gre', 'inlined', 'ip', 'ipfix', 'ipsec',
+                          'ixgbe', 'libbpf', 'libcrypto', 'libgcc',
+                          'libopenvswitch', 'libreswan', 'libssl', 'libxdp',
+                          'lldp', 'llvm', 'lockless', 'mcast', 'megaflows',
+                          'mfex', 'ncat', 'networkmanager', 'pcap', 'pedit',
+                          'pidfile', 'pps', 'rculist', 'rebalance', 'rebased'
+                          'recirculations', 'revalidators', 'rst', 'sed',
+                          'shrinked', 'snat', 'stderr', 'stdout', 'testpmd',
+                          'tftp', 'timeval', 'trie', 'tso', 'ubsan', 'ukey',
+                          'umask', 'unassociated', 'unixctl', 'uuid'
+                          'virtqueue', 'vms', 'vnet', 'vport', 'vports',
+                          'vtep', 'wc', 'wget', 'xenserver', 'util']
+
         global spell_check_dict
 
         spell_check_dict = enchant.Dict("en_US")
@@ -67,12 +132,8 @@ def open_spell_check_dict():
                     for word in words:
                         spell_check_dict.add_to_session(word.strip())
 
-        check_dict_file = os.path.join(get_top_directory(), "utilities",
-                                       "checkpatch_dict.txt")
-        if os.path.exists(check_dict_file):
-            with open(check_dict_file, "r") as project_words:
-                for check_word in project_words:
-                    spell_check_dict.add_to_session(check_word.strip())
+        for kw in extra_keywords:
+            spell_check_dict.add_to_session(kw)
 
         return True
     except:
@@ -301,10 +362,20 @@ def is_comment_line(line):
     return __regex_is_comment_line.match(line) is not None
 
 
-def has_comment(line):
+def has_comment(line, is_python_file=False): # Modified: added is_python_file parameter
     """Returns TRUE if the current line contains a comment or is part of
        a block comment."""
-    return __regex_has_comment.match(line) is not None
+    if is_python_file:
+        # For Python, check for '#' or docstring markers
+        if re.search(r'#', line):
+            return True
+        # Basic check for docstring start/end. More robust parsing is complex.
+        if '"""' in line or "'''" in line:
+            return True
+        return False
+    else:
+        # Existing C-style comment check
+        return __regex_has_comment.match(line) is not None
 
 
 def has_c99_comment(line):
@@ -384,7 +455,7 @@ def filter_comments(current_line, keep=False):
     return sanitized_line
 
 
-def check_spelling(line, comment):
+def check_spelling(line, is_c_comment_line=False, is_python_file=False): # Modified: renamed and adjusted parameters
     if not spell_check_dict or not spellcheck:
         return False
 
@@ -392,8 +463,25 @@ def check_spelling(line, comment):
     if line.startswith('Fixes: ') or is_name_tag.match(line):
         return False
 
-    words = filter_comments(line, True) if comment else line
-    words = words.replace(':', ' ').split(' ')
+    words_to_check = ""
+    if is_python_file:
+        # Extract Python comments: '#'
+        match = re.search(r'#(.*)$', line)
+        if match:
+            words_to_check = match.group(1).strip()
+        # For docstrings, if '"""' or "'''" are on the line, assume the whole line might be part of the docstring.
+        # This is a simplified approach, actual multi-line docstring parsing is more complex.
+        elif '"""' in line or "'''" in line:
+            words_to_check = line.replace('"""', '').replace("'''", '').strip()
+    elif is_c_comment_line: # This implies it's a C-style comment line that needs filtering
+        words_to_check = filter_comments(line, True)
+    else: # This is for commit messages or non-comment code lines
+        words_to_check = line
+
+    if not words_to_check:
+        return False
+
+    words = words_to_check.replace(':', ' ').split(' ')
 
     flagged_words = []
     num_suggestions = 3
@@ -599,7 +687,11 @@ checks = [
 
     {'regex': r'(\.c|\.h)(\.in)?$', 'match_name': None,
      'prereq': lambda x: has_comment(x),
-     'check': lambda x: check_spelling(x, True)},
+     'check': lambda x: check_spelling(x, is_c_comment_line=True, is_python_file=False)}, # Explicitly pass False for is_python_file
+
+    {'regex': r'\.py$', 'match_name': None,
+     'prereq': lambda x: has_comment(x, is_python_file=True), # Now pass True for is_python_file to has_comment
+     'check': lambda x: check_spelling(x, is_c_comment_line=False, is_python_file=True)}, # Explicitly pass False for is_c_comment_line
 
     {'regex': r'(\.c|\.h)(\.in)?$', 'match_name': None,
      'check': lambda x: empty_return_with_brace(x),
@@ -783,7 +875,7 @@ def run_file_checks(text):
 def run_subject_checks(subject, spellcheck=False):
     warnings = False
 
-    if spellcheck and check_spelling(subject, False):
+    if spellcheck and check_spelling(subject, is_c_comment_line=False, is_python_file=False): # Modified: updated parameters
         warnings = True
 
     summary = subject[subject.rindex(': ') + 2:]
@@ -1005,7 +1097,7 @@ def ovs_checkpatch_parse(text, filename, author=None, committer=None):
                             '--abbrev=12 COMMIT_REF\n')
                 print("%d: %s\n" % (lineno, line))
             elif spellcheck:
-                check_spelling(line, False)
+                check_spelling(line, is_c_comment_line=False, is_python_file=False) # Modified: updated parameters
             for typo, correct in tags_typos.items():
                 m = re.match(typo, line, re.I)
                 if m:
@@ -1136,7 +1228,7 @@ def ovs_checkpatch_file(filename):
                                                 spellcheck):
         result = True
 
-    ovs_checkpatch_print_result()
+    ovs_checkpatch_result()
     if ovs_checkpatch_print_missing_authors():
         result = True
     return result
