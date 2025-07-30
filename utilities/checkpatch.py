@@ -40,6 +40,10 @@ missing_authors = []
 codespell_dictionaries = ['dictionary.txt', 'dictionary_code.txt']
 __codespell_dict_reset_once = True
 
+NOT_COMMENT = 0
+C_COMMENT = 1
+PY_COMMENT = 2
+
 
 def open_spell_check_dict():
     import enchant
@@ -362,7 +366,7 @@ def is_comment_line(line):
     return __regex_is_comment_line.match(line) is not None
 
 
-def has_comment(line, is_python_file=False): # Modified: added is_python_file parameter
+def has_comment(line, is_python_file=False):
     """Returns TRUE if the current line contains a comment or is part of
        a block comment."""
     if is_python_file:
@@ -455,7 +459,7 @@ def filter_comments(current_line, keep=False):
     return sanitized_line
 
 
-def check_spelling(line, is_c_comment_line=False, is_python_file=False): # Modified: renamed and adjusted parameters
+def check_spelling(line, comment_type=NOT_COMMENT):
     if not spell_check_dict or not spellcheck:
         return False
 
@@ -464,7 +468,7 @@ def check_spelling(line, is_c_comment_line=False, is_python_file=False): # Modif
         return False
 
     words_to_check = ""
-    if is_python_file:
+    if comment_type == PY_COMMENT:
         # Extract Python comments: '#'
         match = re.search(r'#(.*)$', line)
         if match:
@@ -473,9 +477,9 @@ def check_spelling(line, is_c_comment_line=False, is_python_file=False): # Modif
         # This is a simplified approach, actual multi-line docstring parsing is more complex.
         elif '"""' in line or "'''" in line:
             words_to_check = line.replace('"""', '').replace("'''", '').strip()
-    elif is_c_comment_line: # This implies it's a C-style comment line that needs filtering
+    elif comment_type == C_COMMENT: # This implies it's a C-style comment line that needs filtering
         words_to_check = filter_comments(line, True)
-    else: # This is for commit messages or non-comment code lines
+    else: # This is for commit messages or non-comment code lines (NOT_COMMENT)
         words_to_check = line
 
     if not words_to_check:
@@ -687,11 +691,11 @@ checks = [
 
     {'regex': r'(\.c|\.h)(\.in)?$', 'match_name': None,
      'prereq': lambda x: has_comment(x),
-     'check': lambda x: check_spelling(x, is_c_comment_line=True, is_python_file=False)}, # Explicitly pass False for is_python_file
+     'check': lambda x: check_spelling(x, comment_type=C_COMMENT)},
 
     {'regex': r'\.py$', 'match_name': None,
-     'prereq': lambda x: has_comment(x, is_python_file=True), # Now pass True for is_python_file to has_comment
-     'check': lambda x: check_spelling(x, is_c_comment_line=False, is_python_file=True)}, # Explicitly pass False for is_c_comment_line
+     'prereq': lambda x: has_comment(x, is_python_file=True),
+     'check': lambda x: check_spelling(x, comment_type=PY_COMMENT)},
 
     {'regex': r'(\.c|\.h)(\.in)?$', 'match_name': None,
      'check': lambda x: empty_return_with_brace(x),
@@ -875,7 +879,7 @@ def run_file_checks(text):
 def run_subject_checks(subject, spellcheck=False):
     warnings = False
 
-    if spellcheck and check_spelling(subject, is_c_comment_line=False, is_python_file=False): # Modified: updated parameters
+    if spellcheck and check_spelling(subject, comment_type=NOT_COMMENT):
         warnings = True
 
     summary = subject[subject.rindex(': ') + 2:]
@@ -1097,7 +1101,7 @@ def ovs_checkpatch_parse(text, filename, author=None, committer=None):
                             '--abbrev=12 COMMIT_REF\n')
                 print("%d: %s\n" % (lineno, line))
             elif spellcheck:
-                check_spelling(line, is_c_comment_line=False, is_python_file=False) # Modified: updated parameters
+                check_spelling(line, comment_type=NOT_COMMENT)
             for typo, correct in tags_typos.items():
                 m = re.match(typo, line, re.I)
                 if m:
@@ -1177,7 +1181,7 @@ Check options:
           % sys.argv[0])
 
 
-def ovs_checkpatch_print_result():
+def ovs_checkpatch_result():
     global quiet, __warnings, __errors, total_line
 
     if __errors or __warnings:
@@ -1343,7 +1347,7 @@ Subject: %s
             usage()
             sys.exit(EXIT_FAILURE)
         result = ovs_checkpatch_parse(sys.stdin.read(), '-')
-        ovs_checkpatch_print_result()
+        ovs_checkpatch_result()
         if ovs_checkpatch_print_missing_authors():
             result = EXIT_FAILURE
         sys.exit(result)
